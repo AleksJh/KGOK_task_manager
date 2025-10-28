@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}Список задач - Kapantask{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-5">Список задач</h1>
+    </div>
+    {% if user.is_admin %}
+    <div class="col-auto">
+        <a href="{% url 'task_create' %}" class="btn btn-primary">Создать задачу</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row mb-4">
+    <div class="col">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <form method="get" class="row g-3 align-items-center">
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Статус</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="" {% if not request.GET.status %}selected{% endif %}>Все</option>
+                            <option value="NEW" {% if request.GET.status == 'NEW' %}selected{% endif %}>Новые</option>
+                            <option value="IN_PROGRESS" {% if request.GET.status == 'IN_PROGRESS' %}selected{% endif %}>В работе</option>
+                            <option value="COMPLETED" {% if request.GET.status == 'COMPLETED' %}selected{% endif %}>Выполненные</option>
+                            <option value="POSTPONED" {% if request.GET.status == 'POSTPONED' %}selected{% endif %}>Отложенные</option>
+                        </select>
+                    </div>
+                    {% if user.is_admin %}
+                    <div class="col-md-3">
+                        <label for="department" class="form-label">Служба</label>
+                        <select name="department" id="department" class="form-select">
+                            <option value="" {% if not request.GET.department %}selected{% endif %}>Все</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.id }}" {% if request.GET.department == dept.id|stringformat:"i" %}selected{% endif %}>{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    <div class="col-md-3">
+                        <label for="overdue" class="form-label">Просроченные</label>
+                        <select name="overdue" id="overdue" class="form-select">
+                            <option value="" {% if not request.GET.overdue %}selected{% endif %}>Все</option>
+                            <option value="1" {% if request.GET.overdue == '1' %}selected{% endif %}>Только просроченные</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Применить фильтры</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-body">
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for task in tasks %}
+                    <div class="col">
+                        <div class="card h-100 task-card {% if task.status == 'NEW' %}status-new{% elif task.status == 'IN_PROGRESS' %}status-in-progress{% elif task.status == 'COMPLETED' %}status-completed{% elif task.status == 'POSTPONED' %}status-postponed{% endif %}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ task.title }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ task.get_status_display }}</h6>
+                                <p class="card-text">{{ task.description|truncatechars:150 }}</p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Служба: {{ task.assigned_to.name }}</small>
+                                    <small class="text-muted {% if task.is_overdue %}overdue{% endif %}">
+                                        Срок: {{ task.due_date|date:"d.m.Y" }}
+                                        {% if task.is_overdue %} (просрочено){% endif %}
+                                    </small>
+                                </div>
+                                <div class="d-grid gap-2 mt-2">
+                                    <a href="{% url 'task_detail' task.id %}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">Нет задач, соответствующих выбранным фильтрам</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

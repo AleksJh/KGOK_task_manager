@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "kapantask"
+version = "0.1.0"
+description = "Система Управления Задачами Капанского ГОК"
+authors = ["Aleksan.Jhangiryan@kapanmpc.am"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0.0"
+psycopg2-binary = "^2.9.9"
+celery = "^5.3.6"
+django-bootstrap5 = "^23.3"
+gunicorn = "^21.2.0"
+environs = "^10.0.0"
+factory-boy = "^3.3.0"
+marshmallow = "3.20.2"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.8"
+coverage = "^7.3.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I"]
+ignore = []
+exclude = [
+    ".git",
+    ".ruff_cache",
+    "__pycache__",
+    "venv",
+    ".env",
+    "migrations",
+]
+
+[tool.ruff.isort]
+known-first-party = ["kapantask", "tasks"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"

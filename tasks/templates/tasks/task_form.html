@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}{% if form.instance.id %}Редактирование задачи{% else %}Создание задачи{% endif %} - Kapantask{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Панель управления</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'task_list' %}">Задачи</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% if form.instance.id %}Редактирование задачи{% else %}Создание задачи{% endif %}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{% if form.instance.id %}Редактирование задачи{% else %}Создание задачи{% endif %}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">{% if form.instance.id %}Сохранить изменения{% else %}Создать задачу{% endif %}</button>
+                        <a href="{% if form.instance.id %}{% url 'task_detail' form.instance.id %}{% else %}{% url 'task_list' %}{% endif %}" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
