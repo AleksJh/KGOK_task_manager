@@ -36,7 +36,7 @@
 
 ```bash
 # Клонирование репозитория
-git clone https://github.com/your-repo/kapantask.git
+git clone https://github.com/AleksJh/KGOK_task_manager
 cd kapantask
 
 # Установка зависимостей с помощью Poetry

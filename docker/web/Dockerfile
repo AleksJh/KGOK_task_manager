@@ -23,11 +23,14 @@ RUN mkdir -p /app/static /app/media
 # Сбор статических файлов
 RUN python manage.py collectstatic --noinput
 
-# Запуск миграций
-RUN python manage.py migrate
+# Копируем entrypoint-скрипт
+COPY docker/web/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # Порт для Gunicorn
 EXPOSE 8000
 
-# Запуск Gunicorn
+# Устанавливаем entrypoint; команда будет передана скрипту
+ENTRYPOINT ["/app/entrypoint.sh"]
+# Значение по умолчанию — запуск Gunicorn
 CMD ["gunicorn", "kapantask.wsgi:application", "--bind", "0.0.0.0:8000"]
