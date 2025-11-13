@@ -20,12 +20,9 @@ COPY . /app/
 # Создание директорий для статических и медиа файлов
 RUN mkdir -p /app/static /app/media
 
-# Сбор статических файлов
-RUN python manage.py collectstatic --noinput
-
 # Копируем entrypoint-скрипт
 COPY docker/web/entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 # Порт для Gunicorn
 EXPOSE 8000

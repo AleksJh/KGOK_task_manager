@@ -12,6 +12,8 @@ services:
       - .env
     environment:
       - MIGRATE_ON_START=true
+      - COLLECTSTATIC_ON_START=true
+      - POSTGRES_HOST=db
     depends_on:
       db:
         condition: service_healthy
@@ -47,6 +49,7 @@ services:
       - .env
     environment:
       - MIGRATE_ON_START=false
+      - POSTGRES_HOST=db
     depends_on:
       db:
         condition: service_healthy
