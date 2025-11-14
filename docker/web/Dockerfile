@@ -20,14 +20,14 @@ COPY . /app/
 # Создание директорий для статических и медиа файлов
 RUN mkdir -p /app/static /app/media
 
-# Копируем entrypoint-скрипт
-COPY docker/web/entrypoint.sh /app/entrypoint.sh
-RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+# Копируем entrypoint-скрипт вне /app, чтобы bind mount не затенял его
+COPY docker/web/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
 
 # Порт для Gunicorn
 EXPOSE 8000
 
 # Устанавливаем entrypoint; команда будет передана скрипту
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 # Значение по умолчанию — запуск Gunicorn
 CMD ["gunicorn", "kapantask.wsgi:application", "--bind", "0.0.0.0:8000"]

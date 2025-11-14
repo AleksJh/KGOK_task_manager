@@ -46,17 +46,18 @@ poetry install
 poetry shell
 ```
 
-### Запуск в Dev-среде (Docker Compose)
+### Быстрый старт (Dev)
 
 ```bash
 # Создание .env файла (или использование примера)
 cp .env.example .env
 
-# Запуск всех сервисов
-docker-compose up -d
+# Запуск всех сервисов в Dev-режиме
+# Используется docker-compose.override.yml: монтируется код и включён авто‑перезапуск
+docker compose up -d
 
 # Инициализация демо-данных
-docker-compose exec web python manage.py setup_demo_data
+docker compose exec web python manage.py setup_demo_data
 ```
 
 ### Доступ к приложению
@@ -143,3 +144,27 @@ ruff check .
 # Автоматическое форматирование кода
 ruff format .
 ```
+### Разделение сред: Dev vs Prod
+
+**Как это реализовано в проекте:**
+- В продакшене исходный код копируется в образ (см. `docker/web/Dockerfile:18-33`).
+
+- В разработке используется `docker-compose.override.yml`, который:
+  - монтирует код: `./:/app`;
+  - запускает Gunicorn с авто‑перезагрузкой: `--reload` (`docker-compose.override.yml:7`).
+
+**Команды запуска:**
+- Dev (с монтированием кода и авто‑перезагрузкой):
+  - `docker compose up -d`
+- Prod (без монтирования кода, как в образе):
+  - `docker compose -f docker-compose.yml up -d`
+
+**Переключение между режимами:**
+- Остановить текущий стек: `docker compose down`
+- Запустить нужный режим:
+  - Dev: `docker compose up -d`
+  - Prod: `docker compose -f docker-compose.yml up -d`
+
+**Примечания:**
+- На Windows важно корректное окончание строк в `entrypoint.sh`. В Dockerfile предусмотрена нормализация (`sed -i 's/\r$//' ...`).
+- Если менялись зависимости, выполните пересборку: `docker compose build --no-cache && docker compose up -d`.
