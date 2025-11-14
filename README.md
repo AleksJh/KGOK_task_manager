@@ -64,9 +64,15 @@ docker compose exec web python manage.py setup_demo_data
 
 После запуска, приложение будет доступно по адресу: http://localhost:8000
 
-**Демо-аккаунты**:
-- **Администратор**: admin@kgok.ru / adminpass
-- **Службы**: geology@kgok.ru / servicepass (и другие)
+**Вход в систему**:
+- Можно входить как по имени пользователя, так и по email.
+- Примеры:
+  - Администратор: `admin` или `admin@kgok.ru` / `adminpass`
+  - Службы: `geology` или `geology@kgok.ru` / `servicepass` (аналогично: `geomech`, `survey`, `drilling`)
+
+**Демо-аккаунты** (инициализируются командой из раздела «Быстрый старт»):
+- Администратор: `admin@kgok.ru` / `adminpass`
+- Службы: `geology@kgok.ru`, `geomech@kgok.ru`, `survey@kgok.ru`, `drilling@kgok.ru` — пароль `servicepass`
 
 ## Инструкция для Production
 

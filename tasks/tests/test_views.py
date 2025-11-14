@@ -73,7 +73,14 @@ class LoginViewTest(TestCase):
             'username': 'testuser',
             'password': 'testpassword'
         })
-        self.assertRedirects(response, reverse('dashboard'))
+        self.assertRedirects(response, reverse('dashboard'), fetch_redirect_response=False)
+
+    def test_login_view_post_success_with_email(self):
+        response = self.client.post(reverse('login'), {
+            'username': 'test@example.com',
+            'password': 'testpassword'
+        })
+        self.assertRedirects(response, reverse('dashboard'), fetch_redirect_response=False)
 
     def test_login_view_post_failure(self):
         response = self.client.post(reverse('login'), {

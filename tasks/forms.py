@@ -1,14 +1,30 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 
 from .models import User, Task, Department, Comment, EmailConfiguration
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    """Кастомная форма аутентификации."""
-    username = forms.CharField(label=_('Email'), widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(label=_('Email или имя пользователя'), widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label=_('Пароль'), widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def clean(self):
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+        user = authenticate(self.request, username=username, password=password)
+        if not user and username and '@' in username:
+            try:
+                u = User.objects.get(email__iexact=username)
+                user = authenticate(self.request, username=u.username, password=password)
+            except User.DoesNotExist:
+                pass
+        if not user:
+            raise self.get_invalid_login_error()
+        self.confirm_login_allowed(user)
+        self.user_cache = user
+        return self.cleaned_data
 
 
 class UserForm(UserCreationForm):
