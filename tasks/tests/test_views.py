@@ -1,10 +1,9 @@
-from django.test import TestCase, Client
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
+from django.urls import reverse
 
 from tasks.models import Department, Task
-from tasks.tests.test_models import DepartmentFactory, UserFactory, TaskFactory
-
+from tasks.tests.test_models import DepartmentFactory, TaskFactory, UserFactory
 
 User = get_user_model()
 
@@ -95,15 +94,22 @@ class DashboardViewTest(ViewsTestCase):
     def test_dashboard_view_admin(self):
         response = self.admin_client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'tasks/dashboard.html')
-        self.assertIn('departments', response.context)
-        self.assertIn('tasks_by_status', response.context)
+        self.assertTemplateUsed(response, 'tasks/admin_dashboard.html')
+        self.assertIn('department_stats', response.context)
+        self.assertIn('total_tasks', response.context)
+        self.assertIn('completed_tasks', response.context)
+        self.assertIn('in_progress_tasks', response.context)
+        self.assertIn('overdue_tasks', response.context)
 
     def test_dashboard_view_service(self):
         response = self.service_client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'tasks/dashboard.html')
+        self.assertTemplateUsed(response, 'tasks/user_dashboard.html')
         self.assertIn('tasks', response.context)
+        self.assertIn('total_tasks', response.context)
+        self.assertIn('completed_tasks', response.context)
+        self.assertIn('in_progress_tasks', response.context)
+        self.assertIn('overdue_tasks', response.context)
 
     def test_dashboard_view_unauthenticated(self):
         response = self.client.get(reverse('dashboard'))

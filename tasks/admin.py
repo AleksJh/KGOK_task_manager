@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Department, Task, Comment, EmailConfiguration
+
+from .models import Comment, Department, EmailConfiguration, Task, User
 
 
 @admin.register(User)
@@ -10,7 +11,19 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Персональная информация', {'fields': ('first_name', 'last_name', 'email')}),
-        ('Разрешения', {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_admin', 'groups', 'user_permissions')}),
+        (
+            'Разрешения',
+            {
+                'fields': (
+                    'is_active',
+                    'is_staff',
+                    'is_superuser',
+                    'is_admin',
+                    'groups',
+                    'user_permissions',
+                )
+            },
+        ),
         ('Служба', {'fields': ('department',)}),
         ('Важные даты', {'fields': ('last_login', 'date_joined')}),
     )

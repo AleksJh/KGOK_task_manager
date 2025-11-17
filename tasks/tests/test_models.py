@@ -1,10 +1,11 @@
 from datetime import timedelta
+
 from django.test import TestCase
 from django.utils import timezone
-from factory import SubFactory, Faker
+from factory import Faker, SubFactory
 from factory.django import DjangoModelFactory
 
-from tasks.models import Department, User, Task, Comment, EmailConfiguration
+from tasks.models import Comment, Department, EmailConfiguration, Task, User
 
 
 class DepartmentFactory(DjangoModelFactory):
@@ -139,7 +140,7 @@ class CommentModelTest(TestCase):
         task = TaskFactory(title='Тестовая задача')
         user = UserFactory(username='testuser')
         comment = CommentFactory(task=task, user=user)
-        self.assertEqual(str(comment), f'Комментарий к задаче "Тестовая задача" от testuser')
+        self.assertEqual(str(comment), 'Комментарий к задаче "Тестовая задача" от testuser')
 
 
 class EmailConfigurationModelTest(TestCase):

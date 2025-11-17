@@ -1,14 +1,20 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.utils.translation import gettext_lazy as _
 
-from .models import User, Task, Department, Comment, EmailConfiguration
+from .models import Comment, Department, EmailConfiguration, Task, User
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    username = forms.CharField(label=_('Email или имя пользователя'), widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(label=_('Пароль'), widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(
+        label=_('Email или имя пользователя'),
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    password = forms.CharField(
+        label=_('Пароль'),
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
 
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -31,7 +37,16 @@ class UserForm(UserCreationForm):
     """Форма для создания пользователя."""
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'is_admin', 'department', 'password1', 'password2')
+        fields = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'is_admin',
+            'department',
+            'password1',
+            'password2',
+        )
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
@@ -90,7 +105,13 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ('content',)
         widgets = {
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Добавить комментарий...'}),
+            'content': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 3,
+                    'placeholder': 'Добавить комментарий...',
+                }
+            ),
         }
         labels = {
             'content': '',

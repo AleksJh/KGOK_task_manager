@@ -1,9 +1,10 @@
 import datetime
-from django.core.management.base import BaseCommand
-from django.utils import timezone
-from django.db import transaction
 
-from tasks.models import User, Department, Task, EmailConfiguration
+from django.core.management.base import BaseCommand
+from django.db import transaction
+from django.utils import timezone
+
+from tasks.models import Department, EmailConfiguration, Task, User
 
 
 class Command(BaseCommand):
@@ -49,40 +50,38 @@ class Command(BaseCommand):
 
         # Создание пользователей для служб
         self.stdout.write('Создание пользователей для служб...')
-        users = {
-            'geology': User.objects.create_user(
-                username='geology',
-                email='geology@kgok.ru',
-                password='servicepass',
-                first_name='Геологическая',
-                last_name='Служба',
-                department=departments['geology'],
-            ),
-            'geomech': User.objects.create_user(
-                username='geomech',
-                email='geomech@kgok.ru',
-                password='servicepass',
-                first_name='Геомеханический',
-                last_name='Отдел',
-                department=departments['geomech'],
-            ),
-            'survey': User.objects.create_user(
-                username='survey',
-                email='survey@kgok.ru',
-                password='servicepass',
-                first_name='Маркшейдерская',
-                last_name='Служба',
-                department=departments['survey'],
-            ),
-            'drilling': User.objects.create_user(
-                username='drilling',
-                email='drilling@kgok.ru',
-                password='servicepass',
-                first_name='Буровзрывной',
-                last_name='Отдел',
-                department=departments['drilling'],
-            ),
-        }
+        User.objects.create_user(
+            username='geology',
+            email='geology@kgok.ru',
+            password='servicepass',
+            first_name='Геологическая',
+            last_name='Служба',
+            department=departments['geology'],
+        )
+        User.objects.create_user(
+            username='geomech',
+            email='geomech@kgok.ru',
+            password='servicepass',
+            first_name='Геомеханический',
+            last_name='Отдел',
+            department=departments['geomech'],
+        )
+        User.objects.create_user(
+            username='survey',
+            email='survey@kgok.ru',
+            password='servicepass',
+            first_name='Маркшейдерская',
+            last_name='Служба',
+            department=departments['survey'],
+        )
+        User.objects.create_user(
+            username='drilling',
+            email='drilling@kgok.ru',
+            password='servicepass',
+            first_name='Буровзрывной',
+            last_name='Отдел',
+            department=departments['drilling'],
+        )
 
         # Создание демо-задач
         self.stdout.write('Создание демо-задач...')
@@ -91,7 +90,10 @@ class Command(BaseCommand):
         # Задача 1: Выполненная задача для геологической службы
         Task.objects.create(
             title='Подготовить геологический отчет',
-            description='Необходимо подготовить квартальный отчет по геологическим изысканиям. Включить данные по всем скважинам за последние 3 месяца.',
+            description=(
+                'Необходимо подготовить квартальный отчет по геологическим изысканиям. '
+                'Включить данные по всем скважинам за последние 3 месяца.'
+            ),
             status=Task.Status.COMPLETED,
             assigned_to=departments['geology'],
             assigned_by=admin_user,
@@ -102,7 +104,10 @@ class Command(BaseCommand):
         # Задача 2: Задача в работе для геомеханического отдела
         Task.objects.create(
             title='Провести анализ устойчивости',
-            description='Анализ устойчивости бортов карьера в зоне A. Особое внимание уделить северному борту.',
+            description=(
+                'Анализ устойчивости бортов карьера в зоне A. '
+                'Особое внимание уделить северному борту.'
+            ),
             status=Task.Status.IN_PROGRESS,
             assigned_to=departments['geomech'],
             assigned_by=admin_user,
@@ -113,7 +118,10 @@ class Command(BaseCommand):
         # Задача 3: Ожидающая задача для маркшейдерской службы
         Task.objects.create(
             title='Маркшейдерская съемка',
-            description='Провести плановую съемку участка №3. Необходимо определить точные координаты и высотные отметки.',
+            description=(
+                'Провести плановую съемку участка №3. '
+                'Необходимо определить точные координаты и высотные отметки.'
+            ),
             status=Task.Status.NEW,
             assigned_to=departments['survey'],
             assigned_by=admin_user,
@@ -124,7 +132,10 @@ class Command(BaseCommand):
         # Задача 4: Просроченная задача для буровзрывного отдела
         Task.objects.create(
             title='Подготовить план БВР',
-            description='Разработать план буровзрывных работ для участка №2. Учесть близость водоносного горизонта.',
+            description=(
+                'Разработать план буровзрывных работ для участка №2. '
+                'Учесть близость водоносного горизонта.'
+            ),
             status=Task.Status.NEW,
             assigned_to=departments['drilling'],
             assigned_by=admin_user,
@@ -135,7 +146,10 @@ class Command(BaseCommand):
         # Задача 5: Отложенная задача для геологической службы
         Task.objects.create(
             title='Анализ керновых проб',
-            description='Провести детальный анализ керновых проб с участка №5. Определить содержание полезных компонентов.',
+            description=(
+                'Провести детальный анализ керновых проб с участка №5. '
+                'Определить содержание полезных компонентов.'
+            ),
             status=Task.Status.POSTPONED,
             assigned_to=departments['geology'],
             assigned_by=admin_user,
@@ -146,7 +160,10 @@ class Command(BaseCommand):
         # Задача 6: Еще одна задача в работе
         Task.objects.create(
             title='Обновление цифровой модели',
-            description='Обновить цифровую модель месторождения с учетом данных последних разведочных скважин.',
+            description=(
+                'Обновить цифровую модель месторождения с учетом данных '
+                'последних разведочных скважин.'
+            ),
             status=Task.Status.IN_PROGRESS,
             assigned_to=departments['survey'],
             assigned_by=admin_user,
@@ -168,4 +185,9 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Демо-данные успешно инициализированы!'))
         self.stdout.write(self.style.SUCCESS('Администратор: admin@kgok.ru / adminpass'))
-        self.stdout.write(self.style.SUCCESS('Службы: geology@kgok.ru, geomech@kgok.ru, survey@kgok.ru, drilling@kgok.ru / servicepass'))
+        self.stdout.write(
+            self.style.SUCCESS(
+                'Службы: geology@kgok.ru, geomech@kgok.ru, '
+                'survey@kgok.ru, drilling@kgok.ru / servicepass'
+            )
+        )

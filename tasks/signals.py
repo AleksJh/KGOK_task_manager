@@ -1,8 +1,8 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import Task, Comment
-from .tasks import send_task_notification, send_comment_notification
+from .models import Comment, Task
+from .tasks import send_comment_notification, send_task_notification
 
 
 @receiver(post_save, sender=Task)

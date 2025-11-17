@@ -1,10 +1,10 @@
 from celery import shared_task
-from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
-from .models import Task, Comment, EmailConfiguration
+from .models import Comment, EmailConfiguration, Task
 
 
 def get_email_config():
@@ -94,7 +94,8 @@ def send_comment_notification(comment_id):
             html_message=html_message,
         )
         
-        return f'Уведомление о комментарии {comment_id} успешно отправлено на {", ".join(recipients)}'
+        recipients_str = ", ".join(recipients)
+        return f'Уведомление о комментарии {comment_id} успешно отправлено на {recipients_str}'
     except Comment.DoesNotExist:
         return f'Комментарий с ID {comment_id} не найден'
     except Exception as e:

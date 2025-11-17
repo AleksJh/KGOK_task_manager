@@ -1,12 +1,18 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Count, Q
-from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
-from .models import Task, Department, Comment, EmailConfiguration
-from .forms import TaskForm, CommentForm, DepartmentForm, EmailConfigurationForm, TaskStatusForm
+from .forms import (
+    CommentForm,
+    DepartmentForm,
+    EmailConfigurationForm,
+    TaskForm,
+    TaskStatusForm,
+)
+from .models import Department, EmailConfiguration, Task
 
 
 @login_required

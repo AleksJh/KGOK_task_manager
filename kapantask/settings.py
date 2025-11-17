@@ -1,5 +1,5 @@
-import os
 from pathlib import Path
+
 from environs import Env
 
 env = Env()
@@ -144,7 +144,14 @@ EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", "noreply@kapangok.kz")
 
 # Настройки Celery
-CELERY_BROKER_URL = f"amqp://{env('RABBITMQ_USER', 'guest')}:{env('RABBITMQ_PASSWORD', 'guest')}@{env('RABBITMQ_HOST', 'localhost')}:{env('RABBITMQ_PORT', '5672')}/{env('RABBITMQ_VHOST', '/')}"
+_rabbit_user = env("RABBITMQ_USER", "guest")
+_rabbit_password = env("RABBITMQ_PASSWORD", "guest")
+_rabbit_host = env("RABBITMQ_HOST", "localhost")
+_rabbit_port = env("RABBITMQ_PORT", "5672")
+_rabbit_vhost = env("RABBITMQ_VHOST", "/")
+CELERY_BROKER_URL = (
+    f"amqp://{_rabbit_user}:{_rabbit_password}@{_rabbit_host}:{_rabbit_port}/{_rabbit_vhost}"
+)
 CELERY_RESULT_BACKEND = "rpc://"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
